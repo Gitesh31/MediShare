@@ -1,0 +1,516 @@
+import React, { useState } from 'react';
+import { QrCode, Bell, MapPin, Heart, Pill, User, Home, Calendar, Truck, Users } from 'lucide-react';
+
+interface Medicine {
+  id: string;
+  name: string;
+  expiryDate: string;
+  daysLeft: number;
+  category: string;
+}
+
+interface NGO {
+  id: string;
+  name: string;
+  distance: string;
+  rating: number;
+  specialization: string;
+}
+
+const mockMedicines: Medicine[] = [
+  { id: '1', name: 'Paracetamol', expiryDate: '2024-08-20', daysLeft: 5, category: 'Pain Relief' },
+  { id: '2', name: 'Amoxicillin', expiryDate: '2024-12-15', daysLeft: 45, category: 'Antibiotic' },
+  { id: '3', name: 'Ibuprofen', expiryDate: '2024-09-10', daysLeft: 15, category: 'Anti-inflammatory' },
+];
+
+const mockNGOs: NGO[] = [
+  { id: '1', name: 'Health for All Foundation', distance: '2.5 km', rating: 4.8, specialization: 'General Medicine' },
+  { id: '2', name: 'Care & Share NGO', distance: '3.2 km', rating: 4.6, specialization: 'Child Healthcare' },
+  { id: '3', name: 'Medical Aid Society', distance: '4.1 km', rating: 4.7, specialization: 'Emergency Relief' },
+];
+
+function App() {
+  const [currentPage, setCurrentPage] = useState('landing');
+  const [medicines, setMedicines] = useState<Medicine[]>(mockMedicines);
+  const [notifications, setNotifications] = useState([
+    { id: '1', message: 'Paracetamol will expire in 5 days', type: 'warning' },
+    { id: '2', message: 'Donation pickup scheduled for tomorrow', type: 'info' }
+  ]);
+
+  const renderLandingPage = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <QrCode className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-2xl font-bold text-gray-900">MediShare</span>
+            </div>
+            <div className="hidden md:flex space-x-8">
+              <button className="text-gray-600 hover:text-blue-600 transition-colors">About</button>
+              <button className="text-gray-600 hover:text-blue-600 transition-colors">Contact</button>
+              <button 
+                onClick={() => setCurrentPage('home')}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 className="text-5xl font-bold text-gray-900 mb-6">
+              Don't Waste Medicines,
+              <span className="text-blue-600 block">Donate Before Expiry</span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Track medicine expiry dates with QR codes and donate unexpired medicines to NGOs. 
+              Help reduce waste while helping those in need.
+            </p>
+            <button 
+              onClick={() => setCurrentPage('home')}
+              className="bg-blue-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+            >
+              Get Started
+            </button>
+          </div>
+          <div className="relative">
+            <div className="w-80 h-96 bg-gray-900 rounded-3xl mx-auto relative overflow-hidden shadow-2xl">
+              <div className="absolute inset-4 bg-white rounded-2xl flex items-center justify-center">
+                <QrCode className="w-32 h-32 text-gray-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Features */}
+      <div className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">Key Features</h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { icon: QrCode, title: 'QR Scan & Expiry Reminder', desc: 'Scan medicine QR codes to track expiry dates' },
+              { icon: Bell, title: 'Notification Alerts', desc: 'Get notified before medicines expire' },
+              { icon: MapPin, title: 'Locate NGOs', desc: 'Find nearby NGOs that need medicine donations' },
+              { icon: Truck, title: 'Donation Pickup', desc: 'Schedule convenient pickup for donations' }
+            ].map((feature, index) => (
+              <div key={index} className="text-center p-6 rounded-xl hover:shadow-lg transition-shadow">
+                <div className="w-16 h-16 bg-blue-100 rounded-xl mx-auto mb-4 flex items-center justify-center">
+                  <feature.icon className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-gray-600">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* How It Works */}
+      <div className="bg-gray-50 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">How It Works</h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { icon: QrCode, title: 'Scan Medicine QR Code', step: '1' },
+              { icon: Calendar, title: 'Expiry Date Stored in App', step: '2' },
+              { icon: Bell, title: 'Notification Before Expiry', step: '3' },
+              { icon: Heart, title: 'Donate Unused Pack', step: '4' }
+            ].map((step, index) => (
+              <div key={index} className="text-center">
+                <div className="relative mb-6">
+                  <div className="w-20 h-20 bg-teal-100 rounded-full mx-auto flex items-center justify-center">
+                    <step.icon className="w-10 h-10 text-teal-600" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    {step.step}
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Impact Stats */}
+      <div className="bg-blue-600 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl font-bold text-center text-white mb-16">Our Impact</h2>
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            {[
+              { number: '1,250', label: 'Medicines Donated', icon: Pill },
+              { number: '500 kg', label: 'Waste Reduced', icon: Heart },
+              { number: '800', label: 'People Helped', icon: Users }
+            ].map((stat, index) => (
+              <div key={index} className="bg-white/10 backdrop-blur-md rounded-xl p-8">
+                <stat.icon className="w-12 h-12 text-white mx-auto mb-4" />
+                <div className="text-4xl font-bold text-white mb-2">{stat.number}</div>
+                <div className="text-blue-100">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderHome = () => (
+    <div className="bg-gray-50 min-h-screen">
+      {/* Header */}
+      <div className="bg-white shadow-sm px-4 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">Good morning,</h1>
+            <p className="text-gray-600">User</p>
+          </div>
+          <button 
+            onClick={() => setCurrentPage('profile')}
+            className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
+          >
+            <User className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+      </div>
+
+      {/* QR Scan Card */}
+      <div className="p-4">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 text-white mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Scan QR</h2>
+              <p className="text-blue-100">Add medicines to your inventory</p>
+            </div>
+            <button 
+              onClick={() => setCurrentPage('scanner')}
+              className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center"
+            >
+              <QrCode className="w-8 h-8" />
+            </button>
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="bg-white rounded-xl p-4 text-center">
+            <Pill className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-gray-900">{medicines.length}</p>
+            <p className="text-gray-600 text-sm">Medicines Added</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 text-center">
+            <Bell className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-gray-900">{notifications.length}</p>
+            <p className="text-gray-600 text-sm">Notifications</p>
+          </div>
+        </div>
+
+        {/* Recent Medicines */}
+        <div className="bg-white rounded-xl p-4 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Medicines</h3>
+          <div className="space-y-3">
+            {medicines.slice(0, 2).map((medicine) => (
+              <div key={medicine.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Pill className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">{medicine.name}</p>
+                    <p className="text-sm text-gray-600">{medicine.category}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className={text-sm font-medium ${medicine.daysLeft <= 7 ? 'text-red-600' : 'text-green-600'}}>
+                    {medicine.daysLeft} days left
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button 
+            onClick={() => setCurrentPage('medicines')}
+            className="w-full mt-4 py-2 text-blue-600 font-medium text-center"
+          >
+            View All Medicines
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderScanner = () => (
+    <div className="bg-gray-900 min-h-screen relative">
+      <div className="absolute top-4 left-4 right-4 z-10">
+        <button 
+          onClick={() => setCurrentPage('home')}
+          className="text-white text-lg"
+        >
+          ← Back
+        </button>
+      </div>
+      <div className="flex items-center justify-center h-screen">
+        <div className="w-80 h-80 relative">
+          <div className="w-full h-full border-4 border-white rounded-3xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-white/10 flex items-center justify-center">
+              <QrCode className="w-24 h-24 text-white" />
+            </div>
+            {/* Corner brackets */}
+            <div className="absolute top-4 left-4 w-8 h-8 border-t-4 border-l-4 border-blue-400 rounded-tl-lg"></div>
+            <div className="absolute top-4 right-4 w-8 h-8 border-t-4 border-r-4 border-blue-400 rounded-tr-lg"></div>
+            <div className="absolute bottom-4 left-4 w-8 h-8 border-b-4 border-l-4 border-blue-400 rounded-bl-lg"></div>
+            <div className="absolute bottom-4 right-4 w-8 h-8 border-b-4 border-r-4 border-blue-400 rounded-br-lg"></div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute bottom-20 left-0 right-0 text-center">
+        <p className="text-white text-lg mb-4">Position QR code within the frame</p>
+        <button 
+          onClick={() => {
+            // Simulate QR scan success
+            const newMedicine = {
+              id: Date.now().toString(),
+              name: 'Vitamin D3',
+              expiryDate: '2024-11-20',
+              daysLeft: 75,
+              category: 'Supplement'
+            };
+            setMedicines([...medicines, newMedicine]);
+            setCurrentPage('home');
+          }}
+          className="bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold"
+        >
+          Scan Medicine QR
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderMedicines = () => (
+    <div className="bg-gray-50 min-h-screen">
+      <div className="bg-white shadow-sm px-4 py-4 flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-gray-900">My Medicines</h1>
+        <button 
+          onClick={() => setCurrentPage('scanner')}
+          className="bg-blue-600 text-white p-2 rounded-lg"
+        >
+          <QrCode className="w-5 h-5" />
+        </button>
+      </div>
+      
+      <div className="p-4 space-y-4">
+        {medicines.map((medicine) => (
+          <div key={medicine.id} className="bg-white rounded-xl p-4 shadow-sm">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start space-x-3">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Pill className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">{medicine.name}</h3>
+                  <p className="text-sm text-gray-600">{medicine.category}</p>
+                  <p className="text-sm text-gray-500">Expires: {medicine.expiryDate}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className={text-sm font-medium ${medicine.daysLeft <= 7 ? 'text-red-600' : medicine.daysLeft <= 30 ? 'text-orange-600' : 'text-green-600'}}>
+                  {medicine.daysLeft} days left
+                </p>
+                {medicine.daysLeft <= 30 && (
+                  <button 
+                    onClick={() => setCurrentPage('ngos')}
+                    className="mt-2 bg-green-600 text-white px-4 py-1 rounded-lg text-sm font-medium"
+                  >
+                    Donate Now
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+        
+        <div className="bg-white rounded-xl p-4 shadow-sm border-2 border-dashed border-gray-200">
+          <div className="text-center py-8">
+            <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Donate to NGO</h3>
+            <p className="text-gray-600 mb-4">Help those in need by donating medicines</p>
+            <button 
+              onClick={() => setCurrentPage('ngos')}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium"
+            >
+              Find NGOs
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderNGOs = () => (
+    <div className="bg-gray-50 min-h-screen">
+      <div className="bg-white shadow-sm px-4 py-4">
+        <h1 className="text-xl font-semibold text-gray-900">NGOs Near You</h1>
+      </div>
+      
+      {/* Map Placeholder */}
+      <div className="h-48 bg-gradient-to-br from-green-100 to-blue-100 relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center">
+            <MapPin className="w-12 h-12 text-green-600 mx-auto mb-2" />
+            <p className="text-gray-600">Interactive Map View</p>
+          </div>
+        </div>
+        {/* Mock location pins */}
+        <div className="absolute top-16 left-16 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+        <div className="absolute top-24 right-20 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-16 left-1/3 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+      </div>
+
+      <div className="p-4">
+        <div className="bg-blue-600 rounded-xl p-4 mb-6">
+          <div className="flex items-center justify-between text-white">
+            <div>
+              <h3 className="font-semibold">Donate</h3>
+              <p className="text-blue-100 text-sm">Pickup request</p>
+            </div>
+            <button className="bg-white/20 px-4 py-2 rounded-lg text-sm font-medium">
+              Schedule Pickup
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {mockNGOs.map((ngo) => (
+            <div key={ngo.id} className="bg-white rounded-xl p-4 shadow-sm">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h3 className="font-semibold text-gray-900">{ngo.name}</h3>
+                  <p className="text-sm text-gray-600">{ngo.specialization}</p>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <div className="flex text-yellow-400">
+                    {'★'.repeat(Math.floor(ngo.rating))}
+                  </div>
+                  <span className="text-sm text-gray-600">{ngo.rating}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-gray-600">
+                  <MapPin className="w-4 h-4" />
+                  <span className="text-sm">{ngo.distance} away</span>
+                </div>
+                <button 
+                  onClick={() => {
+                    alert(Donation request sent to ${ngo.name}! They will contact you for pickup.);
+                  }}
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
+                >
+                  Donate Here
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderNotifications = () => (
+    <div className="bg-gray-50 min-h-screen">
+      <div className="bg-white shadow-sm px-4 py-4">
+        <h1 className="text-xl font-semibold text-gray-900">Notifications</h1>
+      </div>
+      
+      <div className="p-4 space-y-4">
+        {notifications.map((notification) => (
+          <div key={notification.id} className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-orange-500">
+            <div className="flex items-start space-x-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <Bell className="w-5 h-5 text-orange-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-gray-900 font-medium">{notification.message}</p>
+                <p className="text-sm text-gray-600 mt-1">2 hours ago</p>
+              </div>
+            </div>
+          </div>
+        ))}
+        
+        <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-blue-500">
+          <div className="flex items-start space-x-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <Truck className="w-5 h-5 text-blue-600" />
+            </div>
+            <div className="flex-1">
+              <p className="text-gray-900 font-medium">Pickup scheduled with Health for All Foundation</p>
+              <p className="text-sm text-gray-600 mt-1">Tomorrow, 10:00 AM</p>
+              <button className="mt-2 bg-blue-600 text-white px-4 py-1 rounded-lg text-sm">
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderBottomNav = () => (
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+      <div className="flex">
+        {[
+          { id: 'home', icon: Home, label: 'Home' },
+          { id: 'medicines', icon: Pill, label: 'Medicines' },
+          { id: 'ngos', icon: MapPin, label: 'NGOs' },
+          { id: 'notifications', icon: Bell, label: 'Alerts' }
+        ].map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setCurrentPage(item.id)}
+            className={`flex-1 py-3 px-2 text-center ${
+              currentPage === item.id
+                ? 'text-blue-600 bg-blue-50'
+                : 'text-gray-600 hover:text-blue-600'
+            } transition-colors`}
+          >
+            <item.icon className="w-5 h-5 mx-auto mb-1" />
+            <span className="text-xs">{item.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="max-w-md mx-auto bg-white min-h-screen relative">
+      {currentPage === 'landing' && renderLandingPage()}
+      {currentPage === 'home' && renderHome()}
+      {currentPage === 'scanner' && renderScanner()}
+      {currentPage === 'medicines' && renderMedicines()}
+      {currentPage === 'ngos' && renderNGOs()}
+      {currentPage === 'notifications' && renderNotifications()}
+      
+      {currentPage !== 'landing' && currentPage !== 'scanner' && renderBottomNav()}
+      
+      {/* Back to Landing Button for Demo */}
+      {currentPage !== 'landing' && (
+        <button
+          onClick={() => setCurrentPage('landing')}
+          className="fixed top-4 right-4 bg-gray-800 text-white p-2 rounded-full shadow-lg z-50 hover:bg-gray-700 transition-colors"
+        >
+          <Home className="w-4 h-4" />
+        </button>
+      )}
+    </div>
+  );
+}
+
+export default App;
